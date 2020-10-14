@@ -1,10 +1,14 @@
 package com.example.room.trigger.data
 
 import android.content.Context
+import android.database.Cursor
+import android.os.CancellationSignal
+import android.util.Log as log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.room.trigger.data.entry.Entry
 import com.example.room.trigger.data.entry.EntryDao
 import com.example.room.trigger.data.log.Log
@@ -17,7 +21,25 @@ abstract class TriggerDemoDatabase : RoomDatabase() {
 
     abstract fun logDao(): LogDao
 
+    override fun query(query: String, args: Array<out Any>?): Cursor {
+        val queryString = if (args.isNullOrEmpty()) {
+            query
+        } else {
+            String.format(query.replace("?", "%s"), args)
+        }
+        log.d(TAG, queryString)
+
+        return super.query(query, args)
+    }
+
+    override fun query(query: SupportSQLiteQuery, signal: CancellationSignal?): Cursor {
+        log.d(TAG, query.sql)
+
+        return super.query(query, signal)
+    }
+
     companion object {
+        private val TAG = TriggerDemoDatabase::class.java.simpleName
         private const val DATABASE_NAME = "trigger_demo_db"
 
         fun create(context: Context): TriggerDemoDatabase {
