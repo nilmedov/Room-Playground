@@ -2,6 +2,7 @@ package com.example.room
 
 import android.app.Application
 import com.example.room.trigger.di.triggerDemoRepositoryModule
+import com.example.room.trigger.di.triggerDemoUseCaseModule
 import com.example.room.trigger.di.triggerDemoViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -15,6 +16,7 @@ class RoomApp : Application() {
             modules(
                 listOf(
                     triggerDemoRepositoryModule,
+                    triggerDemoUseCaseModule,
                     triggerDemoViewModelModule
                 )
             )

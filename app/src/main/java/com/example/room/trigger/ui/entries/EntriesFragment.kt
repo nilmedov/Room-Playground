@@ -58,9 +58,19 @@ class EntriesFragment : Fragment() {
     private fun setupObservers() {
         viewModel.getEvents().observe(viewLifecycleOwner, Observer {
             when (it) {
-                is EntriesEvents.EntriesLoaded -> adapter.setItems(it.entries)
-                is EntriesEvents.AddEntry -> adapter.addItem(it.entry)
-                is EntriesEvents.RemoveEntry -> adapter.removeItem(it.entry)
+                is EntriesEvents.Loading -> progress_bar.visibility = View.VISIBLE
+                is EntriesEvents.EntriesLoaded -> {
+                    progress_bar.visibility = View.GONE
+                    adapter.setItems(it.entries)
+                }
+                is EntriesEvents.AddEntry -> {
+                    progress_bar.visibility = View.GONE
+                    adapter.addItem(it.entry)
+                }
+                is EntriesEvents.RemoveEntry ->  {
+                    progress_bar.visibility = View.GONE
+                    adapter.removeItem(it.entry)
+                }
             }
         })
     }

@@ -6,6 +6,10 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val triggerDemoViewModelModule = module {
-    viewModel { EntriesViewModel(get()) }
+    viewModel { EntriesViewModel(
+        getEntriesUseCase = get(),
+        addEntryUseCase = get(),
+        deleteEntryUseCase = get())
+    }
     viewModel { LogsViewModel(get()) }
 }

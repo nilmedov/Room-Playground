@@ -45,7 +45,6 @@ abstract class TriggerDemoDatabase : RoomDatabase() {
         fun create(context: Context): TriggerDemoDatabase {
             return Room.databaseBuilder(context, TriggerDemoDatabase::class.java, DATABASE_NAME)
                 .addCallback(TriggerDemoDatabaseCallback())
-                .allowMainThreadQueries() // TODO: Add coroutines and remove this
                 .build()
         }
     }

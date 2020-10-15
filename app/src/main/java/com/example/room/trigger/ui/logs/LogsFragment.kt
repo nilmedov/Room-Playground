@@ -46,7 +46,11 @@ class LogsFragment : Fragment() {
     private fun setupObservers() {
         viewModel.getEvents().observe(viewLifecycleOwner) {
             when (it) {
-                is LogsEvents.LogsLoaded -> adapter.setItems(it.logs)
+                is LogsEvents.Loading -> progress_bar.visibility = View.VISIBLE
+                is LogsEvents.LogsLoaded -> {
+                    progress_bar.visibility = View.GONE
+                    adapter.setItems(it.logs)
+                }
             }
         }
     }

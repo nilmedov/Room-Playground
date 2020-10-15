@@ -2,10 +2,17 @@ package com.example.room.trigger.ui.entries
 
 import androidx.lifecycle.*
 import com.example.room.trigger.data.entry.Entry
-import com.example.room.trigger.data.repository.EntriesRepository
+import com.example.room.trigger.domain.usecase.GetEntriesUseCase
+import com.example.room.trigger.domain.usecase.AddEntryUseCase
+import com.example.room.trigger.domain.usecase.DeleteEntryUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EntriesViewModel(
-    private val entriesRepository: EntriesRepository
+    private val getEntriesUseCase: GetEntriesUseCase,
+    private val addEntryUseCase: AddEntryUseCase,
+    private val deleteEntryUseCase: DeleteEntryUseCase
 ) : ViewModel(), LifecycleObserver {
 
     private val events = MutableLiveData<EntriesEvents>()
@@ -19,30 +26,45 @@ class EntriesViewModel(
     fun getEvents(): LiveData<EntriesEvents> = events
 
     fun onAddEntryClicked() {
-        val entry = createNextEntry(previousEntry = entries.lastOrNull())
-        entries.add(entry)
-        entriesRepository.storeEntry(entry)
-        events.value = EntriesEvents.AddEntry(entry)
+        viewModelScope.launch {
+            events.value = EntriesEvents.Loading
+
+            val previousEntry = entries.lastOrNull()
+            val result = withContext(Dispatchers.IO) {
+                addEntryUseCase(previousEntry)
+            }
+
+            entries.add(result)
+            events.value = EntriesEvents.AddEntry(result)
+        }
+
     }
 
     fun onRemoveEntryClicked() {
         val entry = entries.removeLastOrNull() ?: return
-        entriesRepository.deleteEntry(entry)
-        events.value = EntriesEvents.RemoveEntry(entry)
+
+        viewModelScope.launch {
+            events.value = EntriesEvents.Loading
+
+            withContext(Dispatchers.IO) {
+                deleteEntryUseCase(entry)
+            }
+
+            events.value = EntriesEvents.RemoveEntry(entry)
+        }
     }
 
     private fun loadEntries() {
-        entries.clear()
-        entries.addAll(entriesRepository.getEntries())
-        events.value = EntriesEvents.EntriesLoaded(entries)
-    }
+        viewModelScope.launch {
+            events.value = EntriesEvents.Loading
 
-    private fun createNextEntry(previousEntry: Entry?): Entry {
-        return if (previousEntry == null) {
-            Entry(id = 1, title = "Entry 1", timestamp = System.currentTimeMillis())
-        } else {
-            val id = previousEntry.id + 1
-            Entry(id = id, title = "Entry $id", timestamp = System.currentTimeMillis())
+            val result = withContext(Dispatchers.IO) {
+                getEntriesUseCase()
+            }
+
+            entries.clear()
+            entries.addAll(result)
+            events.value = EntriesEvents.EntriesLoaded(entries)
         }
     }
 }

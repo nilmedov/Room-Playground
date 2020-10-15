@@ -1,10 +1,13 @@
 package com.example.room.trigger.ui.logs
 
 import androidx.lifecycle.*
-import com.example.room.trigger.data.repository.EntriesRepository
+import com.example.room.trigger.domain.usecase.GetLogsUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LogsViewModel(
-    private val entriesRepository: EntriesRepository
+    private val getLogsUseCase: GetLogsUseCase
 ) : ViewModel(), LifecycleObserver {
 
     private val events = MutableLiveData<LogsEvents>()
@@ -17,7 +20,15 @@ class LogsViewModel(
     fun getEvents(): LiveData<LogsEvents> = events
 
     private fun loadLogs() {
-        val logs = entriesRepository.getLogs()
-        events.value = LogsEvents.LogsLoaded(logs)
+        viewModelScope.launch {
+            events.value = LogsEvents.Loading
+
+            val result = withContext(Dispatchers.IO) {
+                getLogsUseCase()
+            }
+
+            events.value = LogsEvents.LogsLoaded(result)
+        }
+
     }
 }
