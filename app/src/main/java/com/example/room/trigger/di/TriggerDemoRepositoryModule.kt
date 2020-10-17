@@ -15,6 +15,6 @@ private fun provideTriggerDemoDatabase(context: Context): TriggerDemoDatabase {
     return TriggerDemoDatabase.create(context)
 }
 
-private fun provideEntriesRepository(triggerDemoDatabase: TriggerDemoDatabase): EntriesRepository {
-    return EntriesRepositoryImpl(triggerDemoDatabase.entryDao(), triggerDemoDatabase.logDao())
+private fun provideEntriesRepository(database: TriggerDemoDatabase): EntriesRepository {
+    return EntriesRepositoryImpl(database.entryDao(), database.logDao())
 }

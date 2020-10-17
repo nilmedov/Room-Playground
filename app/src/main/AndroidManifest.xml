@@ -19,9 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".trigger.ui.TriggerDemoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".encryption.ui.EncryptionActivity"
             android:screenOrientation="portrait" />
     </application>
 

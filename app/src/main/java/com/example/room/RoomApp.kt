@@ -1,6 +1,9 @@
 package com.example.room
 
 import android.app.Application
+import com.example.room.encryption.di.encryptedViewModelModule
+import com.example.room.encryption.di.encryptionRepositoryModule
+import com.example.room.encryption.di.encryptionUseCaseModule
 import com.example.room.trigger.di.triggerDemoRepositoryModule
 import com.example.room.trigger.di.triggerDemoUseCaseModule
 import com.example.room.trigger.di.triggerDemoViewModelModule
@@ -17,7 +20,11 @@ class RoomApp : Application() {
                 listOf(
                     triggerDemoRepositoryModule,
                     triggerDemoUseCaseModule,
-                    triggerDemoViewModelModule
+                    triggerDemoViewModelModule,
+
+                    encryptionRepositoryModule,
+                    encryptionUseCaseModule,
+                    encryptedViewModelModule
                 )
             )
         }
