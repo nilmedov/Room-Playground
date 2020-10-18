@@ -2,9 +2,7 @@ package com.example.room.encryption.ui.entries
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.room.R
@@ -26,6 +24,11 @@ class EncryptedEntriesFragment : Fragment() {
         lifecycle.removeObserver(viewModel)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,6 +42,25 @@ class EncryptedEntriesFragment : Fragment() {
         setupRecyclerView()
         setupListeners()
         setupObservers()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_encrypted_entries, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_export_db -> {
+                viewModel.onExportDatabaseClicked()
+                true
+            }
+            R.id.menu_export_decrypted_db -> {
+                viewModel.onExportDecryptedDatabaseClicked()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -67,10 +89,11 @@ class EncryptedEntriesFragment : Fragment() {
                     progress_bar.visibility = View.GONE
                     adapter.addItem(it.entry)
                 }
-                is EncryptedEntriesEvents.RemoveEntry ->  {
+                is EncryptedEntriesEvents.RemoveEntry -> {
                     progress_bar.visibility = View.GONE
                     adapter.removeItem(it.entry)
                 }
+                is EncryptedEntriesEvents.ExportDatabaseFinished -> progress_bar.visibility = View.GONE
             }
         })
     }

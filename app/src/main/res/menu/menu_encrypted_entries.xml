@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_export_db"
+        android:title="Export database" />
+    <item
+        android:id="@+id/menu_export_decrypted_db"
+        android:title="Export decrypted database" />
+</menu>

@@ -11,4 +11,6 @@ sealed class EncryptedEntriesEvents {
     data class AddEntry(val entry: EncryptedEntry) : EncryptedEntriesEvents()
 
     data class RemoveEntry(val entry: EncryptedEntry) : EncryptedEntriesEvents()
+
+    object ExportDatabaseFinished : EncryptedEntriesEvents()
 }

@@ -9,7 +9,8 @@ val encryptedViewModelModule = module {
         EncryptedEntriesViewModel(
             getEntriesUseCase = get(),
             addEntryUseCase = get(),
-            deleteEntryUseCase = get()
+            deleteEntryUseCase = get(),
+            exportDatabaseUseCase = get()
         )
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.room.encryption.data.entry.EncryptedEntry
 import com.example.room.encryption.domain.usecase.AddEncryptedEntryUseCase
 import com.example.room.encryption.domain.usecase.DeleteEncryptedEntryUseCase
+import com.example.room.encryption.domain.usecase.ExportDatabaseUseCase
 import com.example.room.encryption.domain.usecase.GetEncryptedEntriesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,7 +13,8 @@ import kotlinx.coroutines.withContext
 class EncryptedEntriesViewModel(
     private val getEntriesUseCase: GetEncryptedEntriesUseCase,
     private val addEntryUseCase: AddEncryptedEntryUseCase,
-    private val deleteEntryUseCase: DeleteEncryptedEntryUseCase
+    private val deleteEntryUseCase: DeleteEncryptedEntryUseCase,
+    private val exportDatabaseUseCase: ExportDatabaseUseCase
 ) : ViewModel(), LifecycleObserver {
 
     private val events = MutableLiveData<EncryptedEntriesEvents>()
@@ -54,6 +56,14 @@ class EncryptedEntriesViewModel(
         }
     }
 
+    fun onExportDatabaseClicked() {
+        exportDatabase(shouldDecrypt = false)
+    }
+
+    fun onExportDecryptedDatabaseClicked() {
+        exportDatabase(shouldDecrypt = true)
+    }
+
     private fun loadEntries() {
         viewModelScope.launch {
             events.value = EncryptedEntriesEvents.Loading
@@ -65,6 +75,18 @@ class EncryptedEntriesViewModel(
             entries.clear()
             entries.addAll(result)
             events.value = EncryptedEntriesEvents.EntriesLoaded(entries)
+        }
+    }
+
+    private fun exportDatabase(shouldDecrypt: Boolean) {
+        viewModelScope.launch {
+            events.value = EncryptedEntriesEvents.Loading
+
+            withContext(Dispatchers.IO) {
+                exportDatabaseUseCase(shouldDecrypt)
+            }
+
+            events.value = EncryptedEntriesEvents.ExportDatabaseFinished
         }
     }
 }

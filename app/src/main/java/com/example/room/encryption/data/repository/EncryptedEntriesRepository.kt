@@ -9,4 +9,6 @@ interface EncryptedEntriesRepository {
     fun storeEntry(entry: EncryptedEntry)
 
     fun deleteEntry(entry: EncryptedEntry)
+
+    fun exportDatabase(shouldDecrypt: Boolean)
 }

@@ -8,13 +8,13 @@ import org.koin.dsl.module
 
 val encryptionRepositoryModule = module {
     single { provideEncryptedDatabase(get()) }
-    single { provideEncryptedEntriesRepository(get()) }
+    single { provideEncryptedEntriesRepository(get(), get()) }
 }
 
 private fun provideEncryptedDatabase(context: Context): EncryptedDatabase {
     return EncryptedDatabase.create(context)
 }
 
-private fun provideEncryptedEntriesRepository(database: EncryptedDatabase): EncryptedEntriesRepository {
-    return EncryptedEntriesRepositoryImpl(database.encryptedEntryDao())
+private fun provideEncryptedEntriesRepository(context: Context, database: EncryptedDatabase): EncryptedEntriesRepository {
+    return EncryptedEntriesRepositoryImpl(context, database.encryptedEntryDao())
 }
