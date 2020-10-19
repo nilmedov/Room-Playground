@@ -4,7 +4,8 @@ import androidx.lifecycle.*
 import com.example.room.trigger.domain.usecase.GetLogsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 
 class LogsViewModel(
     private val getLogsUseCase: GetLogsUseCase
@@ -12,8 +13,8 @@ class LogsViewModel(
 
     private val events = MutableLiveData<LogsEvents>()
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
         loadLogs()
     }
 
@@ -23,11 +24,11 @@ class LogsViewModel(
         viewModelScope.launch {
             events.value = LogsEvents.Loading
 
-            val result = withContext(Dispatchers.IO) {
-                getLogsUseCase()
-            }
-
-            events.value = LogsEvents.LogsLoaded(result)
+            getLogsUseCase()
+                .flowOn(Dispatchers.IO)
+                .collect {
+                    events.value = LogsEvents.LogsLoaded(it)
+                }
         }
 
     }

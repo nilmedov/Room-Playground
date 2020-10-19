@@ -4,6 +4,7 @@ import com.example.room.trigger.data.entry.Entry
 import com.example.room.trigger.data.entry.EntryDao
 import com.example.room.trigger.data.log.Log
 import com.example.room.trigger.data.log.LogDao
+import kotlinx.coroutines.flow.Flow
 
 class EntriesRepositoryImpl(
     private val entryDao: EntryDao,
@@ -22,7 +23,7 @@ class EntriesRepositoryImpl(
         entryDao.delete(entry)
     }
 
-    override fun getLogs(): List<Log> {
+    override fun getLogs(): Flow<List<Log>> {
         return logDao.getAll()
     }
 }

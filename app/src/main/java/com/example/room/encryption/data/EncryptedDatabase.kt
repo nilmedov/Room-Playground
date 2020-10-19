@@ -11,15 +11,13 @@ import com.example.room.encryption.utils.DBKeyManager
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 
 @Database(entities = [EncryptedEntry::class], version = 1)
 abstract class EncryptedDatabase : RoomDatabase() {
 
     companion object {
         private val TAG = EncryptedDatabase::class.java.simpleName
-        const val DATABASE_NAME = "encrypted_db"
+        private const val DATABASE_NAME = "encrypted_db"
 
         fun create(context: Context): EncryptedDatabase {
             val dbKey = DBKeyManager.getKeyOrCreate(context)

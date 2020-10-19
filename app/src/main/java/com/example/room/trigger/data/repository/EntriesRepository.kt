@@ -2,6 +2,7 @@ package com.example.room.trigger.data.repository
 
 import com.example.room.trigger.data.entry.Entry
 import com.example.room.trigger.data.log.Log
+import kotlinx.coroutines.flow.Flow
 
 interface EntriesRepository {
 
@@ -11,5 +12,5 @@ interface EntriesRepository {
 
     fun deleteEntry(entry: Entry)
 
-    fun getLogs(): List<Log>
+    fun getLogs(): Flow<List<Log>>
 }
